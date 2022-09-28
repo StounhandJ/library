@@ -5,11 +5,19 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteBookController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 
 // PUBLIC //
+
+Route::prefix("search")->middleware("cache.page:15")->group(function () {
+        Route::get("book", [SearchController::class, "book"]);
+        Route::get("author", [SearchController::class, "author"]);
+    });
+
 Route::middleware("cache.page:5")->group(function () {
+
     Route::apiResource("author", AuthorController::class)
         ->only("index")
         ->missing(

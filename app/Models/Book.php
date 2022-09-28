@@ -4,15 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Scout\Searchable;
 
 class Book extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable, SoftDeletes;
 
     protected $fillable = ["name", "description", "date_publication", "path_cover"];
+
+    protected $hidden = ["path_cover"];
 
     protected $appends = ["cover_url", "genres"];
 
@@ -26,6 +30,13 @@ class Book extends Model
         return $this->genres()->get();
     }
 
+    public function toSearchableArray()
+    {
+        return [
+            "name" => $this->name
+        ];
+    }
+
     public function getCoverSrc()
     {
         return Storage::disk("cover")->url($this->path_cover);
@@ -34,8 +45,9 @@ class Book extends Model
     public function getImgPath()
     {
         $src_cover = Storage::disk("cover")->readStream($this->path_cover);
-        if ($src_cover == null)
+        if ($src_cover == null) {
             return $src_cover;
+        }
         return stream_get_meta_data($src_cover)["uri"];
     }
 
