@@ -46,7 +46,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: nginx_kindergarten
+    container_name: nginx
     restart: unless-stopped
     ports:
       - "8080:80"

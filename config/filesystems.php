@@ -36,12 +36,10 @@ return [
             'throw' => false,
         ],
 
-        'public' => [
+        'cover' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-            'throw' => false,
+            'root' => storage_path('app/cover'),
+            "url" => "/img/cover"
         ],
 
         's3' => [
@@ -70,7 +68,7 @@ return [
     */
 
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        public_path('img/cover') => storage_path('app/cover'),
     ],
 
 ];
