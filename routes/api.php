@@ -7,16 +7,32 @@ use App\Http\Controllers\FavoriteBookController;
 use App\Http\Controllers\GenreController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+
+// PUBLIC //
+Route::middleware("cache.page:5")->group(function () {
+    Route::apiResource("author", AuthorController::class)
+        ->only("index")
+        ->missing(
+            fn() => response()->json(["message" => "No query results for model \"Author\""], 404)
+        );
+
+
+    Route::apiResource("genre", GenreController::class)
+        ->only("index")
+        ->missing(
+            fn() => response()->json(["message" => "No query results for model \"Genre\""], 404)
+        );
+
+
+    Route::apiResource("book", BookController::class)
+        ->only("index")
+        ->missing(
+            fn() => response()->json(["message" => "No query results for model \"Book\""], 404)
+        );
+});
+
+//AUTH//
+
 Route::prefix("auth")
     ->group(function () {
 //        Route::middleware("guest")->group(function () {
@@ -32,32 +48,14 @@ Route::prefix("auth")
         });
     });
 
-Route::apiResource("author", AuthorController::class)
-    ->only("index")
-    ->missing(
-        fn() => response()->json(["message" => "No query results for model \"Author\""], 404)
-    );
-
-
-Route::apiResource("genre", GenreController::class)
-    ->only("index")
-    ->missing(
-        fn() => response()->json(["message" => "No query results for model \"Genre\""], 404)
-    );
-
-
-Route::apiResource("book", BookController::class)
-    ->only("index")
-    ->missing(
-        fn() => response()->json(["message" => "No query results for model \"Book\""], 404)
-    );
-
+//ALL USER//
 Route::middleware("role")->group(function () {
     Route::get("favorites_books", [FavoriteBookController::class, "get"]);
     Route::post("favorites_books", [FavoriteBookController::class, "addBook"]);
     Route::delete("favorites_books", [FavoriteBookController::class, "delBook"]);
 });
 
+//ADMIN//
 Route::middleware("role:admin")->group(function () {
     Route::apiResource("author", AuthorController::class)
         ->except("index")

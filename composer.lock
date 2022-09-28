@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7acc14f6cae340e37913481261290e9",
+    "content-hash": "69e01acd4d32ce18c92a1f8566bffea6",
     "packages": [
         {
             "name": "brick/math",
@@ -3469,6 +3469,60 @@
                 "psr20"
             ],
             "time": "2022-09-27T15:03:11+00:00"
+        },
+        {
+            "name": "stounhandj/laravel-cache-route",
+            "version": "v1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/StounhandJ/laravel-cache-route.git",
+                "reference": "d30d007841e54fac082070c6f1ef7509515ee965"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/StounhandJ/laravel-cache-route/zipball/d30d007841e54fac082070c6f1ef7509515ee965",
+                "reference": "d30d007841e54fac082070c6f1ef7509515ee965",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^6.9|^7.0|^8.0|^9.0",
+                "illuminate/http": ">=6.0",
+                "illuminate/support": ">=6.0",
+                "laravel/framework": "^7.0|^8.0|^9.0",
+                "php": "^7.2 || ^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "StounhandJ\\LaravelCacheRoute\\CacheRoteProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "StounhandJ\\LaravelCacheRoute\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roman Marinichev",
+                    "email": "rmarinicev@gmail.com"
+                },
+                {
+                    "name": "Shankar Manamalkav",
+                    "email": "mnshankar@gmail.com"
+                }
+            ],
+            "description": "Cache (HTML) output of entire route to speedup your Laravel application",
+            "support": {
+                "source": "https://github.com/StounhandJ/laravel-cache-route/tree/v1.1.3"
+            },
+            "time": "2022-06-27T16:41:30+00:00"
         },
         {
             "name": "symfony/console",
