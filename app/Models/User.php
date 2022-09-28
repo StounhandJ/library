@@ -23,7 +23,6 @@ class User extends Authenticatable implements JWTSubject
         'login',
         'password',
         'birthday',
-        'birthday',
         'role_id',
         'gender',
     ];
@@ -36,13 +35,19 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'role_id',
     ];
 
-    protected $appends = ["favorites_books"];
+    protected $appends = ["favorites_books", "role_name"];
 
     public function getFavoritesBooksAttribute(): \Illuminate\Database\Eloquent\Collection
     {
         return $this->favorites_books()->get();
+    }
+
+    public function getRoleNameAttribute(): string
+    {
+        return Role::query()->find($this->role_id)->name;
     }
 
     public function setPasswordAttribute($password)
