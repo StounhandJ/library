@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ChangeUserRequest extends FormRequest
@@ -27,7 +28,7 @@ class ChangeUserRequest extends FormRequest
             "surname" => "string|min:1|max:255",
             "name" => "string|min:1|max:255",
             "patronymic" => "string|min:1|max:255",
-            "login" => "string|min:5|max:255",
+            "login" => "string|min:5|max:255|unique:".User::class.",login",
             "password" => "string|min:5|max:255",
             "birthday" => "date",
             "role" => [

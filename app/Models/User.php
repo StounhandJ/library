@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -40,6 +38,12 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    protected $appends = ["favorites_books"];
+
+    public function getFavoritesBooksAttribute(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->favorites_books()->get();
+    }
 
     public function setPasswordAttribute($password)
     {
@@ -60,15 +64,23 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+
+        ];
+    }
+
+    public function favorites_books(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Book::class, 'favorites_books');
     }
 
     public function checkRole(array|string $roles): bool
     {
         $role_name = Role::query()->where("id", $this->role_id)->firstOrNew()->name;
-        if (is_array($roles))
+        if (is_array($roles)) {
             return in_array($role_name, $roles);
-        else
-            return $role_name==$roles;
+        } else {
+            return $role_name == $roles;
+        }
     }
 }

@@ -20,14 +20,14 @@ class RoleMiddleware
             if ($request->wantsJson()) {
                 return response()->json(['error' => 'Forbidden'], 403);
             } else {
-                return route("index");
+                return redirect("/");
             }
         }
 
         if ($request->wantsJson()) {
             return response()->json(['error' => 'Unauthorized'], 401);
         } else {
-            return route("index");
+            return redirect("/");
         }
     }
 }

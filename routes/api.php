@@ -3,8 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\FavoriteBookController;
 use App\Http\Controllers\GenreController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,20 +32,49 @@ Route::prefix("auth")
         });
     });
 
+Route::apiResource("author", AuthorController::class)
+    ->only("index")
+    ->missing(
+        fn() => response()->json(["message" => "No query results for model \"Author\""], 404)
+    );
+
+
+Route::apiResource("genre", GenreController::class)
+    ->only("index")
+    ->missing(
+        fn() => response()->json(["message" => "No query results for model \"Genre\""], 404)
+    );
+
+
+Route::apiResource("book", BookController::class)
+    ->only("index")
+    ->missing(
+        fn() => response()->json(["message" => "No query results for model \"Book\""], 404)
+    );
+
 Route::middleware("role")->group(function () {
+    Route::get("favorites_books", [FavoriteBookController::class, "get"]);
+    Route::post("favorites_books", [FavoriteBookController::class, "addBook"]);
+    Route::delete("favorites_books", [FavoriteBookController::class, "delBook"]);
+});
+
+Route::middleware("role:admin")->group(function () {
     Route::apiResource("author", AuthorController::class)
+        ->except("index")
         ->missing(
             fn() => response()->json(["message" => "No query results for model \"Author\""], 404)
         );
 
 
     Route::apiResource("genre", GenreController::class)
+        ->except("index")
         ->missing(
             fn() => response()->json(["message" => "No query results for model \"Genre\""], 404)
         );
 
 
     Route::apiResource("book", BookController::class)
+        ->except("index")
         ->missing(
             fn() => response()->json(["message" => "No query results for model \"Book\""], 404)
         );
