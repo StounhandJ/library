@@ -13,4 +13,6 @@ class Genre extends Model
     protected $fillable = ["name"];
 
     protected $table = "genre";
+
+    protected $hidden = ["created_at", "updated_at", "deleted_at"];
 }

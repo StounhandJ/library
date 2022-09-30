@@ -13,6 +13,8 @@ class Author extends Model
 
     protected $fillable = ["fio"];
 
+    protected $hidden = ["created_at", "updated_at", "deleted_at"];
+
     public function toSearchableArray()
     {
         return [

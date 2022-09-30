@@ -16,7 +16,7 @@ class Book extends Model
 
     protected $fillable = ["name", "description", "date_publication", "path_cover"];
 
-    protected $hidden = ["path_cover"];
+    protected $hidden = ["path_cover", "created_at", "updated_at", "deleted_at"];
 
     protected $appends = ["cover_url", "genres"];
 

@@ -36,6 +36,9 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'remember_token',
         'role_id',
+        "created_at",
+        "deleted_at",
+        "updated_at"
     ];
 
     protected $appends = ["favorites_books", "role_name"];
