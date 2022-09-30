@@ -11,7 +11,7 @@ services:
       - DB_HOST=pg_db
       - DB_USERNAME=root
       - DB_PASSWORD=root
-      - DB_DATABASE=veltrix
+      - DB_DATABASE=library
       - PRODUCT=False
       - MEMCACHED_HOST=memcached_db
       - MEMCACHED_PORT=11211
@@ -34,9 +34,9 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=veltrix
+      - POSTGRES_DB=library
     volumes:
-      - ./db_pg:/var/lib/postgresql/data/
+      - db_pg_library:/var/lib/postgresql/data/
     container_name: pg_db
 
   adminer:
@@ -64,3 +64,6 @@ services:
     restart: always
     command:
       - '--memory-limit=100'
+
+volumes:
+  db_pg_library:
