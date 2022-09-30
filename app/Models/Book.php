@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
@@ -19,6 +20,11 @@ class Book extends Model
     protected $hidden = ["path_cover", "created_at", "updated_at", "deleted_at"];
 
     protected $appends = ["cover_url", "genres"];
+
+    public function getDatePublicationAttribute(): string
+    {
+        return Carbon::make($this->attributes["date_publication"])->dateName();
+    }
 
     public function getCoverUrlAttribute(): string
     {

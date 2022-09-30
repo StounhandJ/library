@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -42,6 +43,11 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $appends = ["favorites_books", "role_name"];
+
+    public function getBirthdayAttribute(): string
+    {
+        return Carbon::make($this->attributes["birthday"])->dateName();
+    }
 
     public function getFavoritesBooksAttribute(): \Illuminate\Database\Eloquent\Collection
     {

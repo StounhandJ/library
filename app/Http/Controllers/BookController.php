@@ -6,7 +6,6 @@ use App\Http\Requests\BookCreateRequest;
 use App\Http\Requests\BookGenreRequest;
 use App\Http\Requests\BookUpdateRequest;
 use App\Models\Book;
-use App\Models\Genre;
 use Illuminate\Http\JsonResponse;
 
 class BookController extends Controller

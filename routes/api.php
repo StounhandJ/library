@@ -44,14 +44,14 @@ Route::middleware("cache.page:5")->group(function () {
 Route::prefix("auth")
     ->group(function () {
 //        Route::middleware("guest")->group(function () {
-        Route::post('reg', [AuthController::class, "reg"]);
-        Route::post('login', [AuthController::class, "login"]);
+        Route::post("reg", [AuthController::class, "reg"]);
+        Route::post("login", [AuthController::class, "login"]);
 //        });
 
         Route::middleware("role")->group(function () {
-            Route::post('logout', [AuthController::class, "logout"]);
-            Route::post('refresh', [AuthController::class, "refresh"]);
-            Route::post('me', [AuthController::class, "me"]);
+            Route::post("logout", [AuthController::class, "logout"]);
+            Route::post("refresh", [AuthController::class, "refresh"]);
+            Route::get("me", [AuthController::class, "me"]);
             Route::put("me", [AuthController::class, "change"]);
         });
     });
