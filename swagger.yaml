@@ -981,7 +981,7 @@ components:
           birthday:
             type: string
             format: date
-            example: "2022-12-31"
+            example: "\"31\" Декабря 2022 года"
           gender:
             type: string
           role_name:
@@ -990,14 +990,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Book'
-          created_at:
-            type: string
-            format: date
-            example: "2022-01-01T12:00:00.000000Z"
-          updated_at:
-            type: string
-            format: date
-            example: "2022-01-01T12:00:00.000000Z"
     Author:
       type: object
       properties:
@@ -1005,14 +997,6 @@ components:
             type: integer
           fio:
             type: string
-          created_at:
-            type: string
-            format: date
-            example: "2022-01-01T12:00:00.000000Z"
-          updated_at:
-            type: string
-            format: date
-            example: "2022-01-01T12:00:00.000000Z"
     Genre:
       type: object
       properties:
@@ -1020,14 +1004,6 @@ components:
             type: integer
           name:
             type: string
-          created_at:
-            type: string
-            format: date
-            example: "2022-01-01T12:00:00.000000Z"
-          updated_at:
-            type: string
-            format: date
-            example: "2022-01-01T12:00:00.000000Z"
     Book:
       type: object
       properties:
@@ -1040,15 +1016,7 @@ components:
           date_publication:
             type: string
             format: date
-            example: "2022-12-31"
-          created_at:
-            type: string
-            format: date
-            example: "2022-01-01T12:00:00.000000Z"
-          updated_at:
-            type: string
-            format: date
-            example: "2022-01-01T12:00:00.000000Z"
+            example: "\"31\" Декабря 2022 года"
           cover_url:
             type: string
             format: url
