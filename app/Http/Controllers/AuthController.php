@@ -16,7 +16,7 @@ class AuthController extends Controller
     {
         $user = User::query()->make($request->all());
         $user->role_id = Role::query()->where("name", $request->get("role"))->firstOrNew()->id;
-
+        $user->setImgSrcIfNotEmpty($request->file("avatar"));
         $user->save();
 
         return response()->json(["message" => "success", "response" => $user]);
@@ -27,6 +27,7 @@ class AuthController extends Controller
         $user = auth()->user();
         if ($request->exists("role"))
             $user->role_id = Role::query()->where("name", $request->get("role"))->firstOrNew()->id;
+        $user->setImgSrcIfNotEmpty($request->file("avatar"));
         $user->update($request->all());
 
         return response()->json(["message" => "success", "response" => $user]);

@@ -28,6 +28,7 @@ class RegRequest extends FormRequest
             "surname" => "string|min:1|max:255",
             "name" => "string|min:1|max:255",
             "patronymic" => "string|min:1|max:255",
+            "avatar" => "image",
             "login" => "required|string|min:5|max:255|unique:".User::class.",login",
             "password" => "required|string|min:5|max:255",
             "birthday" => "date",

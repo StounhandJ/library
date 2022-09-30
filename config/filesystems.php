@@ -39,7 +39,23 @@ return [
         'cover' => [
             'driver' => 'local',
             'root' => storage_path('app/cover'),
-            "url" => "/img/cover"
+            "url" => "/img/cover",
+            'permissions' => [
+                'dir' => [
+                    'private' => 0755,
+                ],
+            ],
+        ],
+
+        'avatar' => [
+            'driver' => 'local',
+            'root' => storage_path('app/avatar'),
+            "url" => "/img/avatar",
+            'permissions' => [
+                'dir' => [
+                    'private' => 0755,
+                ],
+            ],
         ],
 
         's3' => [
@@ -69,6 +85,7 @@ return [
 
     'links' => [
         public_path('img/cover') => storage_path('app/cover'),
+        public_path('img/avatar') => storage_path('app/avatar'),
     ],
 
 ];

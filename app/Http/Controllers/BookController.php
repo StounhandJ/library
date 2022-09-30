@@ -28,17 +28,16 @@ class BookController extends Controller
      */
     public function store(BookCreateRequest $request): JsonResponse
     {
-        $genres = $request->getGenres();
-        if (is_null($genres)) {
-            return response()->json(["message" => "The genres or genre_id parameter must be specified", "errors" => []],
-                422);
-        }
-
         /** @var Book $book */
         $book = Book::query()->make($request->only(["name", "description", "date_publication"]));
 
         $book->setImgSrcIfNotEmpty($request->file("cover"));
-        $book->genres()->attach($genres);
+
+        $genres = $request->getGenres();
+        if (!is_null($genres)) {
+            $book->genres()->sync($genres);
+        }
+
         $book->save();
 
         return response()->json(["message" => "success", "response" => $book]);

@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -26,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'birthday',
         'role_id',
         'gender',
+        'avatar_path',
     ];
 
     /**
@@ -39,14 +43,24 @@ class User extends Authenticatable implements JWTSubject
         'role_id',
         "created_at",
         "deleted_at",
-        "updated_at"
+        "updated_at",
+        "avatar_path",
     ];
 
-    protected $appends = ["favorites_books", "role_name"];
+    protected $appends = ["favorites_books", "role_name", "avatar_url"];
 
-    public function getBirthdayAttribute(): string
+    public function getBirthdayAttribute(): string|null
     {
+        if (is_null($this->attributes["birthday"]))
+            return null;
         return Carbon::make($this->attributes["birthday"])->dateName();
+    }
+
+    public function getAvatarUrlAttribute(): string|null
+    {
+        if (is_null($this->avatar_path))
+            return null;
+        return Request::root() . $this->getAvatarSrc();
     }
 
     public function getFavoritesBooksAttribute(): \Illuminate\Database\Eloquent\Collection
@@ -62,6 +76,34 @@ class User extends Authenticatable implements JWTSubject
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);
+    }
+
+    public function getAvatarSrc(): string
+    {
+        return Storage::disk("avatar")->url($this->avatar_path);
+    }
+
+    /**
+     * Sets the new image src.
+     *
+     * @param UploadedFile|string|null $img
+     */
+    public function setImgSrcIfNotEmpty(UploadedFile|string|null $img)
+    {
+        if (!is_null($img) and ((is_string($img) and $img != "") or !is_string($img))) {
+            $this->avatar_path = User::saveImg($img);
+        }
+    }
+
+    /**
+     * The photo is saved on the disk. Return src.
+     *
+     * @param UploadedFile|string $img
+     * @return string
+     */
+    public static function saveImg(UploadedFile|string $img): string
+    {
+        return Storage::disk("avatar")->put("/", $img, "public");
     }
 
     public static function getByLogin($login): User|\Illuminate\Database\Eloquent\Builder
