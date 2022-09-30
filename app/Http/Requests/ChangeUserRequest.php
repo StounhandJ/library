@@ -31,6 +31,7 @@ class ChangeUserRequest extends FormRequest
             "avatar" => "image",
             "login" => "string|min:5|max:255|unique:".User::class.",login",
             "password" => "string|min:5|max:255",
+            "activated" => "bool",
             "birthday" => "date",
             "role" => [
                 "in:user,admin"

@@ -28,7 +28,7 @@ class AuthController extends Controller
         if ($request->exists("role"))
             $user->role_id = Role::query()->where("name", $request->get("role"))->firstOrNew()->id;
         $user->setImgSrcIfNotEmpty($request->file("avatar"));
-        $user->update($request->all());
+        $user->update($request->except(["activated"]));
 
         return response()->json(["message" => "success", "response" => $user]);
     }
@@ -42,7 +42,7 @@ class AuthController extends Controller
     public function login(AuthRequest $request): JsonResponse
     {
         $credentials = $request->only(["login", "password"]);
-
+        $credentials["activated"] = true;
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }

@@ -10,11 +10,21 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, array|string ...$positions)
     {
+        $user = auth()->user();
+
+        if (!$user->activated) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            } else {
+                return redirect("/");
+            }
+        }
+
         if (count($positions) == 0) {
             $positions = Role::getAllRoles();
         }
 
-        if (auth()->check() && auth()->user()->checkRole($positions)) {
+        if (auth()->check() && $user->checkRole($positions)) {
             return $next($request);
         } elseif (auth()->check()) {
             if ($request->wantsJson()) {
