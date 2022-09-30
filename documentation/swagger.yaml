@@ -1,1102 +1,1356 @@
 openapi: 3.0.0
-info:
-  title: Shop
-  description: This is a simple API
-  contact:
-    email: roman.m2003@yandex.ru
-  version: 1.0.0
 servers:
-- url: https://virtserver.swaggerhub.com/StounhandJ/shop/1.0.0
-  description: SwaggerHub API Auto Mocking
-- url: http://localhost
-  description: SwaggerHub API Auto Mocking
+  # Added by API Auto Mocking Plugin
+  - description: Localhost
+    url: https://localhost:8080
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/StounhandJ/library/1.0.0
+info:
+  version: "1.0.0"
+  title: library
+  description: Simple api for the library
 tags:
-- name: maker
-  description: Производители
-- name: department
-  description: Отделы товаров
-- name: category
-  description: Категории
-- name: product
-  description: Категории
+  - name: Auth
+    description: Авторищация/Регестрация и управление профилем
+  - name: Favorites Books
+    description: Управление избранными (Для всех авторизованных)
+  - name: Search
+    description: Методы для поиска данных (Открыто)
+  - name: OpenData
+    description: Получение всей информации (Открыто)
+  - name: Admin Action
+    description: Управление данными (Для админа)
 paths:
-  /action/maker:
-    get:
-      tags:
-      - maker
-      summary: Список
-      operationId: indexMaker
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200'
+  /api/reg:
     post:
       tags:
-      - maker
-      summary: Создать производителя
-      operationId: storeMaker
+        - Auth
+      operationId: register
       parameters:
-      - name: name
-        in: query
-        description: Имя производителя
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: role
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [user,admin]
+        - name: login
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - in: query
+          name: avatar
+          description: Фотография
+          schema:
+            type: string
+            format: binary
+        - name: surname
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: patronymic
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: birthday
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [man,woman]
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_1'
-        "422":
-          description: Полученные данные были неверными
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-  /action/maker/{maker}:
-    get:
-      tags:
-      - maker
-      summary: Показать производителя
-      operationId: showMaker
-      parameters:
-      - name: maker
-        in: path
-        description: ID производителя
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 236
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_1'
-        "404":
-          description: Производитель не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404'
-    put:
-      tags:
-      - maker
-      summary: Обновить производителя
-      operationId: updateMaker
-      parameters:
-      - name: maker
-        in: path
-        description: ID производителя
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 236
-      - name: name
-        in: query
-        description: Имя производителя
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_1'
-        "404":
-          description: Производитель не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404'
-        "422":
-          description: Полученные данные были неверными
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-    delete:
-      tags:
-      - maker
-      summary: Удалить производителя
-      operationId: deleteMaker
-      parameters:
-      - name: maker
-        in: path
-        description: ID производителя
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 236
-      responses:
-        "200":
-          description: Успешное удаление
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_2'
-        "404":
-          description: Производитель не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404'
-        "500":
-          description: Непредвиденная ошибка
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_500'
-  /action/department:
-    get:
-      tags:
-      - department
-      summary: Список
-      operationId: indexDepartment
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_3'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/User'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/login:
     post:
       tags:
-      - department
-      summary: Создать отдел
-      operationId: storeDepartment
+        - Auth
+      operationId: login
       parameters:
-      - name: name
-        in: query
-        description: Имя отдела
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: Мебель
-      - name: e_name
-        in: query
-        description: "Имя прописными латиницкими буквами, без пробелов"
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: mebel
+        - name: login
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_4'
-        "422":
-          description: Полученные данные были неверными
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-  /action/department/{department}:
-    get:
-      tags:
-      - department
-      summary: Показать отдел
-      operationId: showDepartment
-      parameters:
-      - name: department
-        in: path
-        description: ID отдела
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 79
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_4'
-        "404":
-          description: Отдел не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_1'
-    put:
-      tags:
-      - department
-      summary: Обновить отдел
-      operationId: updateDepartment
-      parameters:
-      - name: department
-        in: path
-        description: ID отдела
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 79
-      - name: name
-        in: query
-        description: Название отдела
-        required: false
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: Сантехника
-      - name: e_name
-        in: query
-        description: "Имя прописными латиницкими буквами, без пробелов"
-        required: false
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: santex
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_4'
-        "404":
-          description: Отдел не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_1'
-        "422":
-          description: Полученные данные были неверными
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-    delete:
-      tags:
-      - department
-      summary: Удалить отдел
-      operationId: deleteDepartment
-      parameters:
-      - name: department
-        in: path
-        description: ID отдела
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 79
-      responses:
-        "200":
-          description: Успешное удаление
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_2'
-        "404":
-          description: Отдел не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_1'
-        "500":
-          description: Непредвиденная ошибка
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_500'
-  /action/category:
-    get:
-      tags:
-      - category
-      summary: Список
-      operationId: indexCategory
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_5'
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/logout:
     post:
       tags:
-      - category
-      summary: Создать категорию
-      operationId: storeCategory
-      parameters:
-      - name: name
-        in: query
-        description: Название категории
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: Шкаф
-      - name: e_name
-        in: query
-        description: "Низвание прописными латиницкими буквами, без пробелов"
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: shkafs
-      - name: department_id
-        in: query
-        description: ID отдела к которому принадлежит категория
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-        example: 79
+        - Auth
+      operationId: logout
+      security:
+        - token: []
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_6'
-        "422":
-          description: Полученные данные были неверными
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-  /action/category/{category}:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/me:
     get:
       tags:
-      - category
-      summary: Показать категорию
-      operationId: showCategory
-      parameters:
-      - name: category
-        in: path
-        description: ID категории
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 31
+        - Auth
+      operationId: meInfo
+      summary: Просмотреть свой профиль
+      security:
+        - token: []
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_6'
-        "404":
-          description: Категория не найдена
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_2'
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
       tags:
-      - category
-      summary: Обновить категорию
-      operationId: updateCategory
+        - Auth
+      operationId: meInfoChange
+      summary: Обновить свой профиль
       parameters:
-      - name: category
-        in: path
-        description: ID категории
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 31
-      - name: name
-        in: query
-        description: Название категории
-        required: false
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: Столы
-      - name: e_name
-        in: query
-        description: "Низвание прописными латиницкими буквами, без пробелов"
-        required: false
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: stols
-      - name: department_id
-        in: query
-        description: ID отдела к которому принадлежит категория
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-        example: 79
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [user,admin]
+        - name: login
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: password
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - in: query
+          name: avatar
+          description: Фотография
+          schema:
+            type: string
+            format: binary
+        - name: surname
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: patronymic
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: birthday
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [man,woman]
+      security:
+        - token: []
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_6'
-        "404":
-          description: Категория не найдена
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_2'
-        "422":
-          description: Полученные данные были неверными
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-    delete:
-      tags:
-      - category
-      summary: Удалить категорию
-      operationId: deleteСategory
-      parameters:
-      - name: category
-        in: path
-        description: ID категории
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 79
-      responses:
-        "200":
-          description: Успешное удаление
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_2'
-        "404":
-          description: Категория не найдена
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_2'
-        "500":
-          description: Непредвиденная ошибка
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_500'
-  /action/product:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/favorites_books:
     get:
       tags:
-      - product
-      summary: Список
-      operationId: indexProduct
+        - Favorites Books
+      operationId: getFavoritesBooks
+      summary: Получить список избранных книг
+      security:
+        - token: []
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_7'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
-      - product
-      summary: Создать продукт
-      operationId: storeProduct
+        - Favorites Books
+      operationId: addFavoritesBooks
+      summary: Добавить кингу или книги в избранное
+      description: Можно отправить дву вариантами, либо еденичную книгу book_id или масиовм books
       parameters:
-      - name: title
-        in: query
-        description: Название продукта
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: Шкаф дубовый
-      - name: description
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 3000
-          minimum: 3
-          type: string
-        example: Очень хороший и красивый шкаф
-      - name: e_name
-        in: query
-        description: "Низвание прописными латиницкими буквами, без пробелов"
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: shkafdyb
-      - name: category_id
-        in: query
-        description: ID категории к которой принадлежит товар
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-        example: 31
-      - name: maker_id
-        in: query
-        description: ID производителя к которой принадлежит товар
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-        example: 236
-      - name: price
-        in: query
-        description: Цена
-        required: true
-        style: form
-        explode: true
-        schema:
-          minimum: 0
-          type: integer
-        example: 81000
-      - name: photo
-        in: query
-        description: "Фотография, до 10мб"
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          format: binary
+        - name: book_id
+          in: query
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                books:
+                  type: array
+                  items:
+                    type: integer
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                books:
+                  type: integer
+      security:
+        - token: []
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_8'
-        "422":
-          description: Полученные данные были неверными
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-  /action/product/{product}:
-    get:
-      tags:
-      - product
-      summary: Показать продукт
-      operationId: showProduct
-      parameters:
-      - name: product
-        in: path
-        description: ID продукта
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 31
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_8'
-        "404":
-          description: Продукт не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_3'
-    put:
-      tags:
-      - product
-      summary: Обновить продукт
-      operationId: updateProduct
-      parameters:
-      - name: product
-        in: path
-        description: ID продукта
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 31
-      - name: title
-        in: query
-        description: Название продукта
-        required: false
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: Шкаф еловый
-      - name: description
-        in: query
-        required: false
-        style: form
-        explode: true
-        schema:
-          maximum: 3000
-          minimum: 3
-          type: string
-        example: А может и не очень красивый
-      - name: e_name
-        in: query
-        description: "Низвание прописными латиницкими буквами, без пробелов"
-        required: false
-        style: form
-        explode: true
-        schema:
-          maximum: 60
-          minimum: 3
-          type: string
-        example: elishkaf
-      - name: category_id
-        in: query
-        description: ID категории к которой принадлежит товар
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-        example: 34
-      - name: maker_id
-        in: query
-        description: ID производителя к которой принадлежит товар
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-        example: 975
-      - name: price
-        in: query
-        description: Цена
-        required: false
-        style: form
-        explode: true
-        schema:
-          minimum: 0
-          type: integer
-        example: 27000
-      - name: photo
-        in: query
-        description: "Фотография, до 10мб"
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          format: binary
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_8'
-        "404":
-          description: Продукт не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_3'
-        "422":
-          description: Полученные данные были неверными
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
     delete:
       tags:
-      - product
-      summary: Удалить продукт
-      operationId: deleteProduct
+        - Favorites Books
+      operationId: addFavoritesDel
+      summary: Добавить кингу или книги в избранное
+      description: Можно отправить дву вариантами, либо еденичную книгу book_id или масиовм books(может быть JSON, swagger говорит в delete так нельзя, но мы его переиграем)
       parameters:
-      - name: product
-        in: path
-        description: ID продукта
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 79
+        - name: book_id
+          in: query
+          schema:
+            type: string
+        - name: books
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      security:
+        - token: []
       responses:
-        "200":
-          description: Успешное удаление
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_2'
-        "404":
-          description: Продукт не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_3'
-        "500":
-          description: Непредвиденная ошибка
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_500'
-  /action/order:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/search/book:
     get:
       tags:
-      - order
-      summary: Список
-      operationId: indexOrder
+        - Search
+      operationId: searchBook
+      summary: Поиск книг по названию (Кэш 15сек)
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 50
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_9'
-  /action/order/{maker}:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/search/author:
     get:
       tags:
-      - order
-      summary: Показать заказ
-      operationId: showOrder
+        - Search
+      operationId: searchAuthor
+      summary: Поиск авторов по ФИО (Кэш 15сек)
       parameters:
-      - name: maker
-        in: path
-        description: ID заказа
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-        example: 236
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 50
       responses:
-        "200":
-          description: Success
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_10'
-        "404":
-          description: Заказ не найден
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Author'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/search/user:
+    get:
+      tags:
+        - Search
+      operationId: searchUser
+      summary: Поиск пользователей по логину и ФИО (Кэш 15сек)
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 50
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_404_4'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Author'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/author:
+    get:
+      tags:
+        - OpenData
+      operationId: getAuthor
+      summary: Авторы (Кэш 5сек)
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Author'
+    post:
+      tags:
+        - Admin Action
+      operationId: createAuthor
+      summary: Создать Автора
+      parameters:
+        - name: fio
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/Author'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/author/{author_id}:
+    put:
+      tags:
+        - Admin Action
+      operationId: changeAuthor
+      summary: Изменить Автора
+      security:
+        - token: []
+      parameters:
+        - name: author_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: fio
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/Author'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      tags:
+        - Admin Action
+      operationId: deleteAuthor
+      summary: Удалить Автора
+      security:
+        - token: []
+      parameters:
+        - name: author_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
+
+  /api/genre:
+    get:
+      tags:
+        - OpenData
+      operationId: getGenre
+      summary: Жанры (Кэш 5сек)
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Genre'
+    post:
+      tags:
+        - Admin Action
+      operationId: createGenre
+      summary: Создать Жанр
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/Genre'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/genre/{genre_id}:
+    put:
+      tags:
+        - Admin Action
+      operationId: changeGenre
+      summary: Изменить Жанр
+      parameters:
+        - name: genre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/Genre'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      tags:
+        - Admin Action
+      operationId: deleteGenre
+      summary: Удалить Жанр
+      parameters:
+        - name: genre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
+
+  /api/book:
+    get:
+      tags:
+        - OpenData
+      operationId: getBook
+      summary: Книги (Кэш 5сек)
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+
+    post:
+      tags:
+        - Admin Action
+      operationId: createBook
+      summary: Создать Книгу
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: description
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: date_publication
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - in: query
+          name: cover
+          description: Фотография
+          required: true
+          schema:
+            type: string
+            format: binary
+        - name: genre_id
+          in: query
+          schema:
+            type: string
+        - name: genres
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/Book'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/book/{book_id}:
+    put:
+      tags:
+        - Admin Action
+      operationId: changeBook
+      summary: Изменить Книгу
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: description
+          in: query
+          schema:
+            type: string
+        - name: date_publication
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - in: query
+          name: cover
+          description: Фотография
+          schema:
+            type: string
+            format: binary
+        - name: genre_id
+          in: query
+          schema:
+            type: string
+        - name: genres
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/Book'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      tags:
+        - Admin Action
+      operationId: deleteBook
+      summary: Удалить Книгу
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
+
+  /api/book/{book_id}/genre:
+    put:
+      tags:
+        - Admin Action
+      operationId: bookAddGenre
+      summary: Добавить книге жанры
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: genre_id
+          in: query
+          schema:
+            type: string
+        - name: genres
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/Book'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      tags:
+        - Admin Action
+      operationId: bookDelGenre
+      summary: Убрать у книги жанры
+      security:
+        - token: []
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: genre_id
+          in: query
+          schema:
+            type: string
+        - name: genres
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/Book'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
+
+  /api/user:
+    get:
+      tags:
+        - Admin Action
+      operationId: getUser
+      summary: Получить пользователей
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    post:
+      tags:
+        - Admin Action
+      operationId: createUser
+      summary: Создать пользователя
+      parameters:
+        - name: role
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [user,admin]
+        - name: login
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - in: query
+          name: avatar
+          description: Фотография
+          schema:
+            type: string
+            format: binary
+        - name: surname
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: patronymic
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: birthday
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [man,woman]
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/user/{user_id}:
+    put:
+      tags:
+        - Admin Action
+      operationId: changeUser
+      summary: Изменить пользователя
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [user,admin]
+        - name: login
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: password
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: activated
+          description: Если данный параметр в значение false аккаунт заблокирован
+          in: query
+          schema:
+            type: boolean
+        - in: query
+          name: avatar
+          description: Фотография
+          schema:
+            type: string
+            format: binary
+        - name: surname
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: patronymic
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: birthday
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [man,woman]
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      tags:
+        - Admin Action
+      operationId: delUser
+      summary: Удалить пользователя
+      security:
+        - token: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
 components:
+  securitySchemes:
+    token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Success:
+      description: Successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+    UnauthorizedError:
+      description: Клиент не авторизован
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Unauthorized
+    ForbiddenError:
+      description: Доступ запрещён
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Forbidden
+    NotFoundError:
+      description: Значение не было найдено
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: No query results for model "Book"
+    UnprocessableEntity:
+      description: Полученные данные были неверными
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: The given data was invalid.
+              errors:
+                type: object
+                description: Перечесление ошибочных данных
+    DeleteError:
+      description: Ошибка при удаление
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: error
   schemas:
-    Maker:
-      required:
-      - id
-      - name
+    User:
       type: object
       properties:
         id:
           type: integer
-          format: uuid
-          example: 236
+        surname:
+          type: string
         name:
           type: string
-          example: Widget Adapter
-    Department:
-      required:
-      - e_name
-      - id
-      - name
+        patronymic:
+          type: string
+        login:
+          type: string
+        birthday:
+          type: string
+          format: date
+          example: "\"31\" Декабря 2022 года"
+        gender:
+          type: string
+        role_name:
+          type: string
+        avatar_url:
+          type: string
+          format: url
+        activated:
+          type: boolean
+          description: Если данный параметр в значение false аккаунт заблокирован
+        favorites_books:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+    Author:
       type: object
       properties:
         id:
           type: integer
-          format: uuid
-          example: 79
+        fio:
+          type: string
+    Genre:
+      type: object
+      properties:
+        id:
+          type: integer
         name:
           type: string
-          example: Мебель
-        e_name:
-          type: string
-          description: "Имя прописными латиницкими буквами, без пробелов"
-          example: mebel
-    Category:
-      required:
-      - department_id
-      - department_name
-      - e_name
-      - id
-      - name
+    Book:
       type: object
       properties:
         id:
           type: integer
-          format: uuid
-          example: 31
         name:
           type: string
-          example: Шкафы
-        e_name:
-          type: string
-          description: "Имя прописными латиницкими буквами, без пробелов"
-          example: shkafs
-        department_id:
-          type: integer
-          description: ID Отдела к которой принадлежит категория
-          example: 79
-        department_name:
-          type: string
-          description: Название Отдела к которой принадлежит категория
-          example: Мебель
-    Product:
-      required:
-      - category
-      - description
-      - e_name
-      - id
-      - img_src
-      - maker_id
-      - price
-      - title
-      - url
-      type: object
-      properties:
-        id:
-          type: integer
-          format: uuid
-          example: 581
-        title:
-          type: string
-          example: Дубовый шкаф
         description:
           type: string
-          example: Очень хороший и красивый шкаф
-        price:
-          type: integer
-          example: 81000
-        e_name:
+        date_publication:
           type: string
-          description: "Имя прописными латиницкими буквами, без пробелов"
-          example: shkafdyb
-        img_url:
+          format: date
+          example: "\"31\" Декабря 2022 года"
+        cover_url:
           type: string
-          description: Ссылка на фотографию
-          example: http://localhost/img/rM3VJDXKPIRIhH1T1DAha3.png
-        category_id:
-          type: integer
-          description: ID категории к которой принадлежит товар
-          example: 31
-        maker_id:
-          type: integer
-          description: ID производителя к которой принадлежит товар
-          example: 236
-        url:
-          type: string
-          description: Ссылка на страницу товара
-          example: http://localhost/p/581
-    Order:
-      required:
-      - id
-      - products
-      type: object
-      properties:
-        id:
-          type: integer
-          format: uuid
-          example: 581
-        products:
+          format: url
+        genres:
           type: array
           items:
-            $ref: '#/components/schemas/Product'
-    inline_response_200:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          type: array
-          items:
-            $ref: '#/components/schemas/Maker'
-    inline_response_200_1:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          $ref: '#/components/schemas/Maker'
-    inline_response_422:
-      type: object
-      properties:
-        message:
-          type: string
-          example: The given data was invalid.
-        errors:
-          type: object
-          description: Перечесление ошибочных данных
-    inline_response_404:
-      type: object
-      properties:
-        message:
-          type: string
-          example: No query results for model "Maker"
-    inline_response_200_2:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-    inline_response_500:
-      type: object
-      properties:
-        message:
-          type: string
-          example: error
-    inline_response_200_3:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          type: array
-          items:
-            $ref: '#/components/schemas/Department'
-    inline_response_200_4:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          $ref: '#/components/schemas/Department'
-    inline_response_404_1:
-      type: object
-      properties:
-        message:
-          type: string
-          example: No query results for model "Department"
-    inline_response_200_5:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          type: array
-          items:
-            $ref: '#/components/schemas/Category'
-    inline_response_200_6:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          $ref: '#/components/schemas/Category'
-    inline_response_404_2:
-      type: object
-      properties:
-        message:
-          type: string
-          example: No query results for model "Сategory"
-    inline_response_200_7:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-    inline_response_200_8:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          $ref: '#/components/schemas/Product'
-    inline_response_404_3:
-      type: object
-      properties:
-        message:
-          type: string
-          example: No query results for model "Product"
-    inline_response_200_9:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
-    inline_response_200_10:
-      type: object
-      properties:
-        message:
-          type: string
-          example: success
-        response:
-          $ref: '#/components/schemas/Order'
-    inline_response_404_4:
-      type: object
-      properties:
-        message:
-          type: string
-          example: No query results for model "Order"
+            $ref: '#/components/schemas/Genre'
