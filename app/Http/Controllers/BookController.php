@@ -6,6 +6,7 @@ use App\Http\Requests\BookCreateRequest;
 use App\Http\Requests\BookGenreRequest;
 use App\Http\Requests\BookUpdateRequest;
 use App\Models\Book;
+use App\Models\Genre;
 use Illuminate\Http\JsonResponse;
 
 class BookController extends Controller
@@ -29,8 +30,10 @@ class BookController extends Controller
     public function store(BookCreateRequest $request): JsonResponse
     {
         $genres = $request->getGenres();
-        if (is_null($genres))
-            return response()->json(["message" => "The genres or genre_id parameter must be specified", "errors" => []], 422);
+        if (is_null($genres)) {
+            return response()->json(["message" => "The genres or genre_id parameter must be specified", "errors" => []],
+                422);
+        }
 
         /** @var Book $book */
         $book = Book::query()->make($request->only(["name", "description", "date_publication"]));
@@ -76,6 +79,11 @@ class BookController extends Controller
             $book->date_publication = $request->get("date_publication");
         }
 
+        $genres = $request->getGenres();
+        if (!is_null($genres)) {
+            $book->genres()->sync($genres);
+        }
+
         $book->save();
 
         return response()->json(["message" => "success", "response" => $book]);
@@ -103,8 +111,10 @@ class BookController extends Controller
     public function addGenre(BookGenreRequest $request, Book $book): JsonResponse
     {
         $genres = $request->getGenres();
-        if (is_null($genres))
-            return response()->json(["message" => "The genres or genre_id parameter must be specified", "errors" => []], 422);
+        if (is_null($genres)) {
+            return response()->json(["message" => "The genres or genre_id parameter must be specified", "errors" => []],
+                422);
+        }
         $book->genres()->attach($genres);
 
         return response()->json(["message" => "success", "response" => $book]);
@@ -120,8 +130,10 @@ class BookController extends Controller
     public function delGenre(BookGenreRequest $request, Book $book): JsonResponse
     {
         $genres = $request->getGenres();
-        if (is_null($genres))
-            return response()->json(["message" => "The genres or genre_id parameter must be specified", "errors" => []], 422);
+        if (is_null($genres)) {
+            return response()->json(["message" => "The genres or genre_id parameter must be specified", "errors" => []],
+                422);
+        }
         $book->genres()->detach($genres);
 
         return response()->json(["message" => "success", "response" => $book]);

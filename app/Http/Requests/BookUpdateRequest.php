@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Genre;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BookUpdateRequest extends FormRequest
@@ -27,7 +28,23 @@ class BookUpdateRequest extends FormRequest
             "name" => "string|min:1|max:255",
             "description" => "text",
             "date_publication" => "date",
-            "cover" => "image"
+            "cover" => "image",
+            "genre_id" => "integer|exists:" . Genre::class . ",id",
+            'genres' => 'array',
+            'genres.*' => "integer|exists:" . Genre::class . ",id"
         ];
+    }
+
+    function getGenres()
+    {
+        if ($this->exists("genre_id")) {
+            return [$this->get("genre_id")];
+        } else {
+            if ($this->exists("genres")) {
+                return $this->get("genres");
+            } else {
+                return null;
+            }
+        }
     }
 }

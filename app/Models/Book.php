@@ -76,6 +76,6 @@ class Book extends Model
 
     public function genres(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Genre::class, 'genre_book');
+        return $this->belongsToMany(Genre::class, 'genre_book')->distinct();
     }
 }
