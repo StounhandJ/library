@@ -1,0 +1,1058 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: Localhost
+    url: https://localhost:8080
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/StounhandJ/library/1.0.0
+info:
+  version: "1.0.0"
+  title: library
+  description: Simple api for the library
+tags:
+  - name: Auth
+    description: Авторищация/Регестрация и управление профилем
+  - name: Favorites Books
+    description: Управление избранными (Для всех авторизованных)
+  - name: Search
+    description: Методы для поиска данных (Открыто)
+  - name: OpenData
+    description: Получение всей информации (Открыто)
+  - name: Admin Action
+    description: Управление данными (Для админа)
+paths:
+  /api/reg:
+    post:
+      tags:
+        - Auth
+      operationId: register
+      parameters:
+        - name: role
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [user,admin]
+        - name: login
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: surname
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: patronymic
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: birthday
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [man,woman]
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/User'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+                      
+  /api/login:
+    post:
+      tags:
+        - Auth
+      operationId: login
+      parameters:
+        - name: login
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    access_token:
+                      type: string
+                    token_type:
+                      type: string
+                    expires_in:
+                      type: integer
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'
+  
+  /api/logout:
+    post:
+      tags:
+        - Auth
+      operationId: logout
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    access_token:
+                      type: string
+                    token_type:
+                      type: string
+                    expires_in:
+                      type: integer
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'
+  
+  /api/me:
+    get:
+      tags:
+        - Auth
+      operationId: meInfo
+      summary: Просмотреть свой профиль
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/User'
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'
+    put:
+      tags:
+        - Auth
+      operationId: meInfoChange
+      summary: Обновить свой профиль
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [user,admin]
+        - name: login
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: password
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: surname
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: patronymic
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: birthday
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [man,woman]
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/User'
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'  
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+  
+  /api/favorites_books:
+    get:
+      tags:
+        - Favorites Books
+      operationId: getFavoritesBooks
+      summary: Получить список избранных книг
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Book'
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - Favorites Books
+      operationId: addFavoritesBooks
+      summary: Добавить кингу или книги в избранное
+      description: Можно отправить дву вариантами, либо еденичную книгу book_id или масиовм books
+      parameters:
+        - name: book_id
+          in: query
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                books:
+                  type: array
+                  items:
+                    type: integer
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                books:
+                  type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Book'
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'  
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'          
+    
+    delete:
+      tags:
+        - Favorites Books
+      operationId: addFavoritesDel
+      summary: Добавить кингу или книги в избранное
+      description: Можно отправить дву вариантами, либо еденичную книгу book_id или масиовм books(может быть JSON, swagger говорит в delete так нельзя, но мы его переиграем)
+      parameters:
+        - name: book_id
+          in: query
+          schema:
+            type: string
+        - name: books
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Book'
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'  
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'          
+
+  /api/search/book:
+    get:
+      tags:
+        - Search
+      operationId: searchBook
+      summary: Поиск книг по названию
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 50
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Book'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+  
+  /api/search/author:
+    get:
+      tags:
+        - Search
+      operationId: searchAuthor
+      summary: Поиск авторов по ФИО
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 50
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Author'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+  
+  /api/author:
+    get:
+      tags:
+        - OpenData
+      operationId: getAuthor
+      summary: Авторы
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Author'
+    post:
+      tags:
+        - Admin Action
+      operationId: createAuthor
+      summary: Создать Автора
+      parameters:
+        - name: fio
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      $ref: '#/components/schemas/Author'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+            
+  /api/author/{author_id}:
+    put:
+      tags:
+        - Admin Action
+      operationId: changeAuthor
+      summary: Изменить Автора
+      security:
+        - token: []
+      parameters:
+        - name: author_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: fio
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      $ref: '#/components/schemas/Author'
+        '404':
+            $ref: '#/components/responses/NotFoundError'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+            
+    delete:
+      tags:
+        - Admin Action
+      operationId: deleteAuthor
+      summary: Удалить Автора
+      security:
+        - token: []
+      parameters:
+        - name: author_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
+  
+  /api/genre:
+    get:
+      tags:
+        - OpenData
+      operationId: getGenre
+      summary: Жанры
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Genre'
+    post:
+      tags:
+        - Admin Action
+      operationId: createGenre
+      summary: Создать Жанр
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      $ref: '#/components/schemas/Genre'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+            
+  /api/genre/{genre_id}:
+    put:
+      tags:
+        - Admin Action
+      operationId: changeGenre
+      summary: Изменить Жанр
+      parameters:
+        - name: genre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      $ref: '#/components/schemas/Genre'
+        '404':
+            $ref: '#/components/responses/NotFoundError'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+            
+    delete:
+      tags:
+        - Admin Action
+      operationId: deleteGenre
+      summary: Удалить Жанр
+      parameters:
+        - name: genre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
+
+  /api/book:
+    get:
+      tags:
+        - OpenData
+      operationId: getBook
+      summary: Книги
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Book'
+                        
+    post:
+      tags:
+        - Admin Action
+      operationId: createBook
+      summary: Создать Книгу
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: description
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: date_publication
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - in: query
+          name: cover
+          description: Фотография
+          required: true
+          schema:
+            type: string
+            format: binary
+        - name: genre_id
+          in: query
+          schema:
+            type: string
+        - name: genres
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      $ref: '#/components/schemas/Book'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+
+  /api/book/{book_id}:
+    put:
+      tags:
+        - Admin Action
+      operationId: changeBook
+      summary: Изменить Книгу
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          schema:
+            type: string
+            minimum: 1
+            maximum: 255
+        - name: description
+          in: query
+          schema:
+            type: string
+        - name: date_publication
+          in: query
+          schema:
+            type: string
+            format: date
+            example: "2022-12-31"
+        - in: query
+          name: cover
+          description: Фотография
+          schema:
+            type: string
+            format: binary
+        - name: genre_id
+          in: query
+          schema:
+            type: string
+        - name: genres
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      $ref: '#/components/schemas/Book'
+        '404':
+            $ref: '#/components/responses/NotFoundError'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+            
+    delete:
+      tags:
+        - Admin Action
+      operationId: deleteBook
+      summary: Удалить Книгу
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
+  
+  /api/book/{book_id}/genre:
+    put:
+      tags:
+        - Admin Action
+      operationId: bookAddGenre
+      summary: Добавить книге жанры
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: genre_id
+          in: query
+          schema:
+            type: string
+        - name: genres
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      security:
+        - token: []
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      $ref: '#/components/schemas/Book'
+        '404':
+            $ref: '#/components/responses/NotFoundError'
+        '422':
+            $ref: '#/components/responses/UnprocessableEntity'
+            
+    delete:
+      tags:
+        - Admin Action
+      operationId: bookDelGenre
+      summary: Убрать у книги жанры
+      security:
+        - token: []
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: genre_id
+          in: query
+          schema:
+            type: string
+        - name: genres
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+      responses:
+        '200':
+          description: successfully
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: success
+                    response:
+                      $ref: '#/components/schemas/Book'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/DeleteError'
+          
+components:
+  securitySchemes:
+    token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  
+  responses:
+    Success:
+      description: Successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+    NotFoundError:
+        description: Значение не было найдено
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: No query results for model "Book"
+    UnauthorizedError:
+      description: Полученные данные были неверными
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Unauthorized
+    UnprocessableEntity:
+      description: Полученные данные были неверными
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: The given data was invalid.
+              errors:
+                type: object
+                description: Перечесление ошибочных данных
+    DeleteError:
+      description: Ошибка при удаление
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: error
+  schemas:
+    User:
+      type: object
+      properties:
+          id:
+            type: integer
+          surname:
+            type: string
+          name:
+            type: string
+          patronymic:
+            type: string
+          login:
+            type: string
+          birthday:
+            type: string
+            format: date
+            example: "2022-12-31"
+          gender:
+            type: string
+          role_name:
+            type: string
+          favorites_books:
+            type: array
+            items:
+              $ref: '#/components/schemas/Book'
+          created_at:
+            type: string
+            format: date
+            example: "2022-01-01T12:00:00.000000Z"
+          updated_at:
+            type: string
+            format: date
+            example: "2022-01-01T12:00:00.000000Z"
+    Author:
+      type: object
+      properties:
+          id:
+            type: integer
+          fio:
+            type: string
+          created_at:
+            type: string
+            format: date
+            example: "2022-01-01T12:00:00.000000Z"
+          updated_at:
+            type: string
+            format: date
+            example: "2022-01-01T12:00:00.000000Z"
+    Genre:
+      type: object
+      properties:
+          id:
+            type: integer
+          name:
+            type: string
+          created_at:
+            type: string
+            format: date
+            example: "2022-01-01T12:00:00.000000Z"
+          updated_at:
+            type: string
+            format: date
+            example: "2022-01-01T12:00:00.000000Z"
+    Book:
+      type: object
+      properties:
+          id:
+            type: integer
+          name:
+            type: string
+          description:
+            type: string
+          date_publication:
+            type: string
+            format: date
+            example: "2022-12-31"
+          created_at:
+            type: string
+            format: date
+            example: "2022-01-01T12:00:00.000000Z"
+          updated_at:
+            type: string
+            format: date
+            example: "2022-01-01T12:00:00.000000Z"
+          cover_url:
+            type: string
+            format: url
+          genres:
+            type: array
+            items:
+              $ref: '#/components/schemas/Genre'
