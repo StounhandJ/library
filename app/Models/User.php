@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Scout\Searchable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -48,6 +49,16 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $appends = ["favorites_books", "role_name", "avatar_url"];
+
+    public function toSearchableArray(): array
+    {
+        return [
+            "login" => $this->login,
+            "surname" => $this->surname,
+            "name" => $this->name,
+            "patronymic" => $this->patronymic,
+        ];
+    }
 
     public function getBirthdayAttribute(): string|null
     {

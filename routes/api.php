@@ -100,4 +100,8 @@ Route::middleware("role:admin")->group(function () {
         ->missing(
             fn() => response()->json(["message" => "No query results for model \"User\""], 404)
         );
+
+    Route::prefix("search")->middleware("cache.page:10")->group(function () {
+        Route::get("user", [SearchController::class, "user"]);
+    });
 });
