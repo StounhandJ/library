@@ -12,7 +12,7 @@ class RoleMiddleware
     {
         $user = auth()->user();
 
-        if (!$user->activated) {
+        if (is_null($user) || !$user->activated) {
             if ($request->wantsJson()) {
                 return response()->json(['error' => 'Unauthorized'], 401);
             } else {
